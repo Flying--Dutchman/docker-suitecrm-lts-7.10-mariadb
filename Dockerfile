@@ -47,7 +47,7 @@ RUN \
 # ############### MARIADB SETUP ##############
 	&& mkdir -p /opt/mariadb/data \
 	&& chown -R www-data:www-data /opt/mariadb \
-	&& gosu www-data wget -O /opt/mariadb/mariadb-10.5.9-linux-x86_64.tar.gz https://downloads.mariadb.org/interstitial/mariadb-10.5.9/bintar-linux-x86_64/mariadb-10.5.9-linux-x86_64.tar.gz/from/http%3A//mirror2.hs-esslingen.de/mariadb/ \
+	&& gosu www-data wget -O /opt/mariadb/mariadb-10.5.9-linux-x86_64.tar.gz https://downloads.mariadb.org/interstitial/mariadb-10.5.9/bintar-linux-x86_64/mariadb-10.5.9-linux-x86_64.tar.gz \
 	&& gosu www-data tar xf /opt/mariadb/mariadb-10.5.9-linux-x86_64.tar.gz -C /opt/mariadb \
 	&& gosu www-data ln -s /opt/mariadb/mariadb-10.5.9-linux-x86_64 /opt/mariadb/mysql \
 	&& chown -R www-data:www-data /opt/mariadb \

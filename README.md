@@ -19,12 +19,12 @@ This image is not extensively tested and therefore not intended for production u
 # Volumes
 
 ### SuiteCRM
-All SuiteCRM volume folders in one: `/var/www/html/docker.d`
-SuiteCRM upload folder: `/var/www/html/upload`
-SuiteCRM configuration: `/var/www/html/docker.d/conf.d`
-SuiteCRM logfile: `/var/www/html/docker.d/log`
-SuiteCRM custom folder: `/var/www/html/custom`
-Entire SuiteCRM folder (if needed): `/var/www/html/`
+All SuiteCRM volume folders in one: `/var/www/html/docker.d` <br>
+SuiteCRM upload folder: `/var/www/html/upload` <br>
+SuiteCRM configuration: `/var/www/html/docker.d/conf.d` <br>
+SuiteCRM logfile: `/var/www/html/docker.d/log` <br>
+SuiteCRM custom folder: `/var/www/html/custom` <br>
+Entire SuiteCRM folder (if needed): `/var/www/html/` <br>
 
 ### MariaDB
 MariaDB: `/opt/mariadb`

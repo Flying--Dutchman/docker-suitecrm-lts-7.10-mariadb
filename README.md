@@ -1,5 +1,4 @@
 # SuiteCRM LTS 7.10 with MariaDB - Docker
-
 A dockerized version of SuiteCRM LTS, complete with PHP, Apache and MariaDB.
 
 This image is not extensively tested and therefore not intended for production use.

@@ -4,6 +4,15 @@ A dockerized version of SuiteCRM LTS, complete with PHP, Apache and MariaDB.
 
 This image is not extensively tested and therefore not intended for production use.
 
+# Enviroment variables
+| Variable  | Default value  | Description  |
+| ------------ | ------------ | ------------ |
+| SUITECRM_DB  | suitecrmdb  | SuiteCRM database name  |
+| SUITECRM_USER  | suitecrmusr   | MariaDB user for the SuiteCRM database  |
+| SUITECRM_PASS  | suitecrmusrpass  | Password for the MariaDB user > SUITECRM_USER |
+| SUITECRM_ROOT_PASS  | too long to post here  | Password for the MariaDB root user  |
+
+
 # Ports
 8080 - SuiteCRM
 

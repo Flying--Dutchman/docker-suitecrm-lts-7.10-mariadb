@@ -2,26 +2,44 @@
 #set -e
 
 # logfile=/dev/stdout
-
-# set file permissions
 # printf '%s\n' "Set permissions" > "$logfile"
 
-echo "Set permissions"
-cd /var/www/html
+mariadb_ready() {
+	mysqladmin ping -S /tmp/mysql.sock > /dev/null 2>&1
+}
+	
+setupMariaDB () {
+	# Create SuiteCRM DB
+	mysql -S /tmp/mysql.sock -e "CREATE DATABASE IF NOT EXISTS ${SUITECRM_DB};" 
+	mysql -S /tmp/mysql.sock -e "grant all privileges on ${SUITECRM_DB}.* TO '${SUITECRM_USER}'@'localhost' identified by '${SUITECRM_PASS}';" 
+	mysql -S /tmp/mysql.sock -e "flush privileges;" 
 
-echo "Create cache folder if needed..."
-mkdir -p cache
+	# Make sure that NOBODY can access the server without a password
+	mysql -S /tmp/mysql.sock -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '${SUITECRM_ROOT_PASS}'; FLUSH PRIVILEGES;"
+	mysql -S /tmp/mysql.sock -e "ALTER USER 'www-data'@'localhost' IDENTIFIED BY '${SUITECRM_ROOT_PASS}'; FLUSH PRIVILEGES;"
+}
 
-echo "Set owner of /var/www/html to www-data..."
-chown -R www-data:www-data /var/www/
 
-echo "Set chmod of /var/www/html recursivly to 755"
-chmod -R 755 /var/www/html
+CONTAINER_ALREADY_STARTED=/opt/mariadb/first_start_flag
 
-echo "Set chmod of cache custom modules themes data upload recursivly to 775"
-chmod -R 775 cache custom modules themes data upload
+exec /opt/mariadb/mysql/bin/mysqld_safe --datadir='/opt/mariadb/data' &
 
-echo "Set chmod of config_override.php to 775"
-chmod 775 config_override.php 2>/dev/null
+while !(mariadb_ready)
+    do
+       echo "Waiting for MariaDB to start..."
+	   sleep 3
+    done
 
-exec gosu www-data apache2-foreground
+echo "Check if first start of container..."
+
+if [[ ! -f "$CONTAINER_ALREADY_STARTED" ]]; then
+	touch "$CONTAINER_ALREADY_STARTED"
+	echo "Container started for the first time"
+	setupMariaDB
+else
+	echo "Container restarted"
+fi
+
+
+
+exec apache2-foreground

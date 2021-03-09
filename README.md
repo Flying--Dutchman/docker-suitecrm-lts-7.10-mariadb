@@ -1,7 +1,11 @@
 # SuiteCRM LTS 7.10 with MariaDB - Docker
 A dockerized version of SuiteCRM LTS, complete with PHP, Apache and MariaDB.
+Automaticly creates backups for MariaDB every night and removes old ones (max 5 days).
 
-This image is not extensively tested and therefore not intended for production use.
+
+This image is not extensively tested nor secured and therefore not intended for production use.
+
+
 
 # Enviroment variables
 | Variable  | Default value  | Description  |
@@ -26,4 +30,4 @@ SuiteCRM custom folder: `/var/www/html/custom` <br>
 Entire SuiteCRM folder (if needed): `/var/www/html/` <br>
 
 ### MariaDB
-MariaDB: `/opt/mariadb`
+MariaDB: `/opt/mariadb/backup`

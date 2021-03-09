@@ -46,15 +46,19 @@ RUN \
 	
 # ############### MARIADB SETUP ##############
 	&& mkdir -p /opt/mariadb/data \
-	&& chown -R www-data:www-data /opt/mariadb \
-	&& gosu www-data wget -O /opt/mariadb/mariadb-10.5.9-linux-x86_64.tar.gz https://downloads.mariadb.org/interstitial/mariadb-10.5.9/bintar-linux-x86_64/mariadb-10.5.9-linux-x86_64.tar.gz \
-	&& gosu www-data tar xf /opt/mariadb/mariadb-10.5.9-linux-x86_64.tar.gz -C /opt/mariadb \
-	&& gosu www-data ln -s /opt/mariadb/mariadb-10.5.9-linux-x86_64 /opt/mariadb/mysql \
+	&& mkdir -p /opt/mariadb/backup \
+	&& wget -O /opt/mariadb/mariadb-10.5.9-linux-x86_64.tar.gz https://downloads.mariadb.org/interstitial/mariadb-10.5.9/bintar-linux-x86_64/mariadb-10.5.9-linux-x86_64.tar.gz \
+	&& tar xf /opt/mariadb/mariadb-10.5.9-linux-x86_64.tar.gz -C /opt/mariadb \
+	&& ln -s /opt/mariadb/mariadb-10.5.9-linux-x86_64 /opt/mariadb/mysql \
 	&& chown -R www-data:www-data /opt/mariadb \
 	&& /opt/mariadb/mysql/scripts/mysql_install_db --user=www-data --basedir=/opt/mariadb/mysql --datadir=/opt/mariadb/data \
 	&& ln -s /opt/mariadb/mysql/support-files/mysql.server /etc/init.d/mysql \
 	&& update-rc.d mysql defaults \
-	
+	&& chown -R www-data:www-data /opt/mariadb \
+	&& ln -s /opt/mariadb/backup /databackup \
+	&& chown -R www-data:www-data /databackup \
+	&& echo "5 1 * * * find /opt/mariadb/backup/*.sql -mtime +5 -exec rm {} \; > /dev/null 2>&1 " | crontab - \
+	&& echo "30 1 * * * mysqldump --user=${SUITECRM_USER} --password=${SUITECRM_PASS} --lock-tables --databases ${SUITECRM_DB} -S /tmp/mysql.sock > /opt/mariadb/backup/$(date +"%Y-%m-%d").sql > /dev/null 2>&1 " | crontab - \
 	
 # ############### APACHE SETUP ##############
 # Listen on non privilaged ports
@@ -127,9 +131,10 @@ VOLUME /var/www/docker.d/conf.d
 VOLUME /var/www/docker.d/logs
 VOLUME /var/www/html/custom
 # Entire SuiteCRM folder (if needed)
-VOLUME /var/www/html/
-# MariaDB volume
-VOLUME /opt/mariadb
+VOLUME /var/www/html
+
+# MariaDB
+VOLUME /databackup
 
 # Define ports
 EXPOSE 8080
